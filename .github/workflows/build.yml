@@ -30,14 +30,36 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Pre-accept System Licenses
-      run: |
-        # Ensure system sdkmanager licenses are completely verified
-        yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
     - name: Build APK with Buildozer
       run: |
+        # Completely clear out any old broken configurations
         rm -rf ~/.buildozer
         rm -rf .buildozer/
+        
+        # Create the target configuration paths early so the license verification hooks work
+        mkdir -p ~/.android
+        touch ~/.android/repositories.cfg
+        
+        # Start a background loops that auto-accepts Android licenses the second Buildozer downloads them
+        while true; do
+          if [ -d "/home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin" ]; then
+            yes | /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          elif [ -d "/home/runner/.buildozer/android/platform/android-sdk/tools/bin" ]; then
+            yes | /home/runner/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --licenses || true
+          fi
+          sleep 5
+        done &
+        LOOP_PID=$!
+
+        # Run the compilation
         buildozer -v android debug
+
+        # Kill the background license loop once the build completes
+        kill $LOOP_PID || true
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: package
+        path: bin/*.apk
         
