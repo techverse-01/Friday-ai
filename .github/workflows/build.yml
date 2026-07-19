@@ -30,17 +30,18 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Force Accept Android Licenses Natively
+    - name: Build APK with System Android SDK
       run: |
-        mkdir -p ~/.android
-        touch ~/.android/repositories.cfg
-        # Dynamically accept all licenses via the Android SDK build tools path
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-        yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || true
-
-    -  name: Build APK with Buildozer
-       run: |
+        # Clear any corrupted buildozer local setups
         rm -rf ~/.buildozer
         rm -rf .buildozer/
-        export ANDROID_skip_update=False
+        
+        # Explicitly accept licenses on the built-in runner SDK
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        
+        # Link Buildozer to use the pre-installed, pre-licensed runner SDK paths directly
+        export BUILDOZER_ANDROID_SDK_DIR=$ANDROID_HOME
+        export BUILDOZER_ANDROID_NDK_DIR=$ANDROID_HOME/ndk/25.2.9519653
+        
         buildozer -v android debug
+        
