@@ -24,6 +24,9 @@ requirements = python3==3.10.12,kivy==2.3.0,cython==0.29.36
 # (int) Android API to use
 android.api = 33
 
+# (bool) Automatically accept SDK licenses
+android.accept_sdk_license = True
+
 # (int) Minimum API your APK will support
 android.minapi = 21
 
@@ -32,8 +35,6 @@ android.build_tools_version = 33.0.2
 
 # (str) Android NDK version to use
 android.ndk = 25b
-
-
 
 # (str) Supported orientations (landscape, portrait or all)
 orientation = portrait
