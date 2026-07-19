@@ -31,6 +31,11 @@ android.accept_sdk_license = True
 android.minapi = 21
 
 # (str) Android Build-Tools version to use
+# Look for these lines and change them to use the GitHub Action paths:
+android.sdk_dir = /usr/local/lib/android/sdk
+android.ndk_dir = /usr/local/lib/android/sdk/ndk/25.2.9519653
+
+# Double check that you still have this version set:
 android.build_tools_version = 33.0.2
 
 # (str) Android NDK version to use
