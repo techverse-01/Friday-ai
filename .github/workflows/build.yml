@@ -20,23 +20,23 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev unzip zip
+        sudo apt-get install -y build-essential ccache git libffi-dev libssl-dev unzip zip openjdk-17-jdk
         pip install --upgrade pip
         pip install buildozer cython virtualenv
 
-    - name: Set up JDK 17 (Required for Android)
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Pre-accept Android SDK Licenses
+    - name: Force Accept Android Licenses Natively
       run: |
         mkdir -p ~/.android
         touch ~/.android/repositories.cfg
-        # Install sdkmanager and automatically accept licenses natively
-        sudo apt-get install -y android-sdk
-        yes | sudo sdkmanager --licenses || true
+        # Dynamically accept all licenses via the Android SDK build tools path
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || true
 
     - name: Build APK with Buildozer
       run: |
