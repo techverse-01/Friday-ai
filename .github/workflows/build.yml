@@ -38,7 +38,9 @@ jobs:
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
         yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || true
 
-    - name: Build APK with Buildozer
-      run: |
-        buildozer android debug
-        
+     - name: Build APK with Buildozer
+       run: |
+        rm -rf ~/.buildozer
+        rm -rf .buildozer/
+        export ANDROID_skip_update=False
+        buildozer -v android debug
