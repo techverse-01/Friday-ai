@@ -44,21 +44,25 @@ class MyConvertedApp(App):
 
 		def speak(text):
 		    """Uses Termux API to speak out loud."""
-		    print(f"Friday: {text}")
+		    x= f"Friday: {text}"
+			self.output_label.text = str(x)
 		    subprocess.run(["termux-tts-speak", text])
 
 		def listen():
 		    """Uses Android's native speech-to-text via Termux API."""
-		    print("Listening...")
+		    y= "Listening..."
+			self.output_label.text = str(y)
 		    try:
 		        # Calls the built-in Android speech recognizer
 		        result = subprocess.run(["termux-speech-to-text"], capture_output=True, text=True)
 		        command = result.stdout.strip()
 		        if command:
-		            print(f"You: {command}")
+		            z= f"You: {command}"
+					self.output_label.text = str(z)
 		            return command.lower()
 		    except Exception as e:
-		        print(f"Speech recognition error: {e}")
+		        a= f"Speech recognition error: {e}"
+				self.output_label.text = str(a)
 		    return ""
 
 		def open_app(package_name, app_name):
@@ -155,7 +159,8 @@ class MyConvertedApp(App):
 		                
 		                speak(response.text)
 		            except Exception as e:
-		                print(f"Error: {e}")
+		                b= f"Error: {e}"
+						self.output_label.text = str(b)
 		                speak("My brain caught an error. Make sure your API key is exported.")
 
 		if __name__ == "__main__":
