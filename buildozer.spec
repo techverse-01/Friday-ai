@@ -18,7 +18,7 @@ source.include_exts = py,png,jpg,kv
 version = 0.1
 
 # (list) Application requirements
-# (list) Application requirements
+# comma separated e.g. requirements = sqlite3,kivy
 requirements = python3==3.10.12,kivy==2.3.0,cython==0.29.36
 
 # (int) Android API to use
@@ -27,11 +27,12 @@ android.api = 33
 # (int) Minimum API your APK will support
 android.minapi = 21
 
+# (str) Android Build-Tools version to use
+android.build_tools_version = 33.0.2
+
 # (str) Android NDK version to use
 android.ndk = 25b
 
-# (str) Android Build-Tools version to use
-android.build_tools_version = 33.0.2
 
 
 # (str) Supported orientations (landscape, portrait or all)
