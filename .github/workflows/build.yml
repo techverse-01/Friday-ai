@@ -30,32 +30,26 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Build APK with Buildozer
+    - name: Pre-Accept Android SDK Licenses
       run: |
-        # Completely clear out any old broken configurations
-        rm -rf ~/.buildozer
-        rm -rf .buildozer/
-        
-        # Create the target configuration paths early so the license verification hooks work
+        # Ensure the Android config folder exists natively
         mkdir -p ~/.android
         touch ~/.android/repositories.cfg
         
-        # Start a background loops that auto-accepts Android licenses the second Buildozer downloads them
-        while true; do
-          if [ -d "/home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin" ]; then
-            yes | /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
-          elif [ -d "/home/runner/.buildozer/android/platform/android-sdk/tools/bin" ]; then
-            yes | /home/runner/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --licenses || true
-          fi
-          sleep 5
-        done &
-        LOOP_PID=$!
+        # Accept the pre-installed system licenses cleanly without loops
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-        # Run the compilation
+    - name: Build APK with Buildozer
+      run: |
+        # Clear out previous attempts entirely
+        rm -rf ~/.buildozer
+        rm -rf .buildozer/
+        
+        # Tell Buildozer to use the pre-licensed system SDK directories directly
+        export BUILDOZER_ANDROID_SDK_DIR=$ANDROID_HOME
+        export BUILDOZER_ANDROID_NDK_DIR=$ANDROID_HOME/ndk/25.2.9519653
+        
         buildozer -v android debug
-
-        # Kill the background license loop once the build completes
-        kill $LOOP_PID || true
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
