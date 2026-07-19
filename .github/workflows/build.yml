@@ -30,14 +30,15 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Pre-accept Android SDK Licenses
+      run: |
+        mkdir -p ~/.android
+        touch ~/.android/repositories.cfg
+        # Install sdkmanager and automatically accept licenses natively
+        sudo apt-get install -y android-sdk
+        yes | sudo sdkmanager --licenses || true
+
     - name: Build APK with Buildozer
       run: |
-        yes | buildozer android debug
-
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: package
-        path: bin/*.apk
-
-  
+        buildozer android debug
+        
