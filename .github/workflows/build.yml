@@ -38,7 +38,7 @@ jobs:
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
         yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses || true
 
-     - name: Build APK with Buildozer
+    -  name: Build APK with Buildozer
        run: |
         rm -rf ~/.buildozer
         rm -rf .buildozer/
